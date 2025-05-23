@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/victoralmeida428/unlock/unlock"
 	"log"
 	"os"
 	"path/filepath"
-	"unlockods/unlock"
 )
 
 func main() {
