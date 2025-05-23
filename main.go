@@ -16,6 +16,7 @@ func main() {
 	inputFile := os.Args[1]
 	outputFile := getOutputFilename(inputFile)
 	
+	fmt.Println("Input file: " + inputFile)
 	if err := unlock.UnlunkFile(inputFile, outputFile); err != nil {
 		log.Fatalf("Erro ao processar arquivo: %v", err)
 	}

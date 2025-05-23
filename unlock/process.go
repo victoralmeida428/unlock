@@ -3,11 +3,24 @@ package unlock
 import (
 	"archive/zip"
 	"fmt"
+	"log"
 	"os"
+	"os/exec"
 	"strings"
 )
 
 func UnlunkFile(inputPath, outputPath string) error {
+	isXls := false
+	if strings.HasSuffix(inputPath, ".xls") {
+		isXls = true
+		cmd := exec.Command("libreoffice", "--headless", "--convert-to", "xlsx", inputPath)
+		output, err := cmd.Output()
+		fmt.Println(string(output))
+		if err != nil {
+			log.Fatal(err)
+		}
+		inputPath += "x"
+	}
 	// 1. Abrir arquivo ODS como ZIP
 	r, err := zip.OpenReader(inputPath)
 	if err != nil {
@@ -37,6 +50,17 @@ func UnlunkFile(inputPath, outputPath string) error {
 		if err := processFileInZIP(file, zipWriter, typeFile); err != nil {
 			return fmt.Errorf("erro ao processar arquivo %s: %w", file.Name, err)
 		}
+	}
+	
+	if isXls {
+		_ = os.Remove(inputPath)
+		cmd := exec.Command("libreoffice", "--headless", "--convert-to", "xls", outputPath)
+		output, err := cmd.Output()
+		fmt.Println(string(output))
+		if err != nil {
+			log.Fatal(err)
+		}
+		
 	}
 	
 	return nil
